@@ -1,0 +1,9 @@
+node_modules/
+*-darwin-x64/
+package-lock.json
+**/.vs/
+*/obj/Debug
+**/Debug
+*~
+build/
+dist/

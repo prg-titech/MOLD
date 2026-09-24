@@ -1,8 +1,9 @@
 # Third-party software
 
-The MOLD browser demo builds on the following separately maintained projects:
+MOLD includes source from these projects:
 
-- **Kanon**: https://github.com/ta-yoshi02/Kanon (fork of https://github.com/prg-titech/Kanon), MIT license. The deployed demo includes `KANON-LICENSE.txt` copied from the pinned Kanon revision.
-- **escher-ts**: https://github.com/ta-yoshi02/escher-ts, ISC license as declared in its `package.json`. The deployed demo includes code bundled from the pinned revision.
+- **Kanon**: adapted from https://github.com/prg-titech/Kanon under the MIT license. See `Kanon/LICENSE`. The Pages artifact includes `KANON-LICENSE.txt`.
+- **escher-ts**: expression synthesis backend included in `external/escher-ts/`. Its `package.json` declares the ISC license.
+- **escodegen**: included in `Kanon/external/escodegen/`, with its original `LICENSE.BSD` and `LICENSE.source-map` files.
 
-The Escher-Scala implementation is not included in the MOLD source or demo. Its research references are listed in the escher-ts README.
+The Escher-Scala implementation is not included. Its research references are listed in the escher-ts README.

@@ -1,6 +1,8 @@
 /target/
 /web/pkg/
-/Kanon/
-/external/escher-ts/
 .DS_Store
 node_modules/
+/Kanon/build/
+/Kanon/dist/
+/Kanon/package-lock.json
+/external/escher-ts/dist/

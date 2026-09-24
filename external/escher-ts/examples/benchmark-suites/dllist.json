@@ -1,0 +1,26 @@
+{
+  "benchmarks": [
+    "isNullNode",
+    "thisRef",
+    "nextRef",
+    "prevRef",
+    "valueRef",
+    "valueAtThis",
+    "hasNext",
+    "hasPrev",
+    "isHead",
+    "isTail",
+    "nextValue",
+    "tailRef",
+    "headValue",
+    "tailValue",
+    "tailPrevRef",
+    "nthRef",
+    "dllLength",
+    "dllSum",
+    "dllMax",
+    "findByValue",
+    "isNonDecreasing",
+    "penultimateRef"
+  ]
+}

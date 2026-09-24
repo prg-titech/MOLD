@@ -18,23 +18,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MOLD
+      - name: Checkout MOLD and bundled sources
         uses: actions/checkout@v5
-
-      - name: Checkout Kanon UI
-        uses: actions/checkout@v5
-        with:
-          repository: ta-yoshi02/Kanon
-          ref: 82d23adcab8549e11d5e846f0c239c8c90682f8f
-          path: Kanon
-          submodules: recursive
-
-      - name: Checkout escher-ts backend
-        uses: actions/checkout@v5
-        with:
-          repository: ta-yoshi02/escher-ts
-          ref: e187df0795af897ba208f8e2e7b801236e045c86
-          path: external/escher-ts
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -99,15 +84,6 @@ jobs:
             echo 'Public demo must not require a localhost server'
             exit 1
           fi
-
-      - name: Record source revisions
-        run: |
-          {
-            echo '## Source revisions'
-            echo "- MOLD: $(git rev-parse HEAD)"
-            echo "- Kanon: $(git -C Kanon rev-parse HEAD)"
-            echo "- escher-ts: $(git -C external/escher-ts rev-parse HEAD)"
-          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

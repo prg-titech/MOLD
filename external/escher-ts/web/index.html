@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>escher-ts Web Runner</title>
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <h1>escher-ts Web Runner</h1>
+      </header>
+
+      <section class="panel">
+        <h2>Shared Settings</h2>
+        <div class="grid grid-4">
+          <label
+            class="has-tooltip"
+            data-tooltip="Global search bound used by both engines for level=1..maxCost. Too small can miss solutions; too large increases runtime."
+          >
+            <span>maxCost</span>
+            <input id="cfg-max-cost" type="number" min="1" value="24" />
+          </label>
+          <label
+            class="has-tooltip"
+            data-tooltip="Per-task wall-clock deadline. In TypedEscher, reboot rounds share the same deadline and do not reset timeout."
+          >
+            <span>timeoutMs</span>
+            <input id="cfg-timeout-ms" type="number" min="1" value="10000" />
+          </label>
+          <label
+            class="has-tooltip"
+            data-tooltip="Multiplier for conditional goal-search budget: searchSizeFactor x level. In AscendRec with onlyForwardSearch=true, this has little effect."
+          >
+            <span>searchSizeFactor</span>
+            <input id="cfg-search-size-factor" type="number" min="1" value="3" />
+          </label>
+          <label
+            class="has-tooltip"
+            data-tooltip="TypedEscher only. Limits reboot retries after counterexample updates (unused by AscendRec)."
+          >
+            <span>maxReboots (TypedEscher)</span>
+            <input id="cfg-max-reboots" type="number" min="0" value="10" />
+          </label>
+        </div>
+        <div class="grid grid-4">
+          <label
+            class="has-tooltip"
+            data-tooltip="then-first / cond-first. Changes conditional decomposition order. Usually affects runtime more than solvability."
+          >
+            <span>strategy</span>
+            <select id="cfg-strategy">
+              <option value="then-first">then-first</option>
+              <option value="cond-first">cond-first</option>
+            </select>
+          </label>
+          <label
+            class="has-tooltip"
+            data-tooltip="AscendRec only. Uses reduction rules (such as isReducible) to prune redundant terms. true is usually recommended."
+          >
+            <span>useReductionRules (AscendRec)</span>
+            <select id="cfg-use-reduction-rules">
+              <option value="true">true</option>
+              <option value="false">false</option>
+            </select>
+          </label>
+          <label
+            class="has-tooltip"
+            data-tooltip="AscendRec only. true disables backward/goal search and uses forward enumeration hits only."
+          >
+            <span>onlyForwardSearch (AscendRec)</span>
+            <select id="cfg-only-forward-search">
+              <option value="false">false</option>
+              <option value="true">true</option>
+            </select>
+          </label>
+          <div class="note">These settings apply to both single-benchmark runs and suite runs.</div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Single Benchmark Run</h2>
+        <div class="grid grid-3">
+          <label>
+            <span>Engine</span>
+            <select id="single-engine">
+              <option value="typed-escher">typed-escher</option>
+              <option value="ascendrec">ascendrec</option>
+            </select>
+          </label>
+          <label>
+            <span>Benchmark</span>
+            <select id="single-benchmark"></select>
+          </label>
+          <div class="actions">
+            <button id="run-single" type="button">Run Selected Benchmark</button>
+          </div>
+        </div>
+        <div class="grid grid-3 single-logs">
+          <section>
+            <h3>Engine Settings</h3>
+            <pre id="single-engine-settings" class="log"></pre>
+          </section>
+          <section>
+            <h3>Synthesis Task Settings</h3>
+            <pre id="single-task-settings" class="log"></pre>
+          </section>
+          <section>
+            <h3>Benchmark Result</h3>
+            <pre id="single-result" class="log"></pre>
+          </section>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Suite Run + Chart</h2>
+        <div class="grid grid-3">
+          <label>
+            <span>Engine</span>
+            <select id="suite-engine">
+              <option value="typed-escher">typed-escher</option>
+              <option value="ascendrec">ascendrec</option>
+            </select>
+          </label>
+          <label>
+            <span>Suite</span>
+            <select id="suite-name">
+              <option value="pure">pure</option>
+              <option value="dllist">dllist</option>
+              <option value="points">points</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button id="run-suite" type="button">Run Suite</button>
+          </div>
+        </div>
+        <pre id="suite-progress" class="log"></pre>
+        <div id="suite-chart" class="chart"></div>
+        <div id="suite-table"></div>
+        <div id="suite-components-table"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
