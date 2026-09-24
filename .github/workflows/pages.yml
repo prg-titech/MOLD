@@ -1,0 +1,129 @@
+name: Deploy MOLD demo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MOLD
+        uses: actions/checkout@v5
+
+      - name: Checkout Kanon UI
+        uses: actions/checkout@v5
+        with:
+          repository: ta-yoshi02/Kanon
+          ref: 82d23adcab8549e11d5e846f0c239c8c90682f8f
+          path: Kanon
+          submodules: recursive
+
+      - name: Checkout escher-ts backend
+        uses: actions/checkout@v5
+        with:
+          repository: ta-yoshi02/escher-ts
+          ref: e187df0795af897ba208f8e2e7b801236e045c86
+          path: external/escher-ts
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.1
+          run_install: false
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-bindgen
+        run: cargo install wasm-bindgen-cli --version 0.2.114 --locked
+
+      - name: Install and build escher-ts
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+        working-directory: external/escher-ts
+
+      - name: Verify Rust tests
+        run: cargo test
+
+      - name: Build MOLD WebAssembly
+        run: node web/scripts/build-wasm.mjs
+
+      - name: Install Kanon dependencies
+        run: npm install
+        working-directory: Kanon
+
+      - name: Bundle MOLD runtime into Kanon
+        run: npm run build-refsyn-runtime
+        working-directory: Kanon
+        env:
+          REFSYN_DIR: ${{ github.workspace }}
+
+      - name: Verify browser synthesis
+        run: npm run verify-refsyn-browser
+        working-directory: Kanon
+        env:
+          REFSYN_DIR: ${{ github.workspace }}
+
+      - name: Build Pages artifact
+        run: npm run build-pages
+        working-directory: Kanon
+
+      - name: Include third-party notices
+        run: |
+          cp Kanon/LICENSE Kanon/dist/KANON-LICENSE.txt
+          cp THIRD_PARTY_NOTICES.md Kanon/dist/THIRD_PARTY_NOTICES.md
+
+      - name: Check browser bundle
+        run: |
+          test -f Kanon/dist/src/js/vendor/refsyn-browser-runtime.js
+          if rg -n 'http://localhost:3030' Kanon/dist/src/js/vendor; then
+            echo 'Public demo must not require a localhost server'
+            exit 1
+          fi
+
+      - name: Record source revisions
+        run: |
+          {
+            echo '## Source revisions'
+            echo "- MOLD: $(git rev-parse HEAD)"
+            echo "- Kanon: $(git -C Kanon rev-parse HEAD)"
+            echo "- escher-ts: $(git -C external/escher-ts rev-parse HEAD)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: Kanon/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
