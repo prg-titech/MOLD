@@ -13,7 +13,7 @@ Open https://prg-titech.github.io/MOLD/ . The demo uses the Kanon graph editor a
 - `web/scripts/build-wasm.mjs`: Rust-to-WebAssembly build.
 - `Kanon/`: the graph editor source used by this demo, adapted from [prg-titech/Kanon](https://github.com/prg-titech/Kanon).
 - `Kanon/external/escodegen/`: the escodegen source required by the Kanon build.
-- `external/escher-ts/`: the expression synthesis backend source.
+- `external/escher-ts/`: the expression synthesis backend source, copied from a fork of [yudaitnb/escher-ts](https://github.com/yudaitnb/escher-ts).
 - `tests/`, `examples/`, and `docs/evaluation_cases/*/mold_payload.json`: tests and their input fixtures.
 - `.github/workflows/pages.yml`: builds and deploys the included sources to GitHub Pages.
 
